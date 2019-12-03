@@ -1,8 +1,10 @@
 <template>
-  <canvas id="canvas" ref="canvas"></canvas>
+  <canvas id="canvas" ref="canvas" width="640" height="640"></canvas>
 </template>
 
 <script>
+import drawNes from "./drawNes";
+
 export default {
   mounted() {
     const that = this;
@@ -20,7 +22,7 @@ export default {
        */
       const canvas = this.$refs.canvas;
       const context = canvas.getContext("2d");
-      console.log({ bytes });
+      drawNes(canvas, bytes);
     }
   }
 };
