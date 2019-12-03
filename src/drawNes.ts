@@ -1,8 +1,4 @@
-function drawNes(canvas: HTMLCanvasElement, bytes: []) {
-  const data = new Uint8Array(bytes);
-
-  console.log(data);
-
+function drawNes(canvas: HTMLCanvasElement, data: Uint8Array) {
   const numberOfBlock = 8; // 每行每列block数
   const numberOfPixels = 8; // 每个block 8像素长宽
 
@@ -23,7 +19,7 @@ function drawNes(canvas: HTMLCanvasElement, bytes: []) {
   context.restore();
 }
 
-function drawBlock(
+export function drawBlock(
   context: CanvasRenderingContext2D,
   data: Uint8Array,
   x: number,
