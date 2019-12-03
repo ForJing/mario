@@ -5,6 +5,10 @@
       <button @click="changeOffset(-1024)">-1024</button>
       <button @click="changeOffset(+1024)">+1024</button>
     </div>
+    <div>
+      <button @click="changeOffset(-16)">-16</button>
+      <button @click="changeOffset(+16)">+16</button>
+    </div>
   </div>
 </template>
 
@@ -14,7 +18,7 @@ import drawNes from "./drawNes";
 export default {
   data() {
     return {
-      offset: 0,
+      offset: 32784,
       bytes: []
     };
   },
@@ -36,7 +40,7 @@ export default {
        */
       const canvas = this.$refs.canvas;
       const context = canvas.getContext("2d");
-      drawNes(canvas, this.bytes, this.offset);
+      drawNes(canvas, this.bytes.slice(this.offset));
     },
 
     changeOffset(offset) {

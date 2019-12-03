@@ -1,5 +1,7 @@
-function drawNes(canvas: HTMLCanvasElement, bytes: [], offset: number) {
+function drawNes(canvas: HTMLCanvasElement, bytes: []) {
   const data = new Uint8Array(bytes);
+
+  console.log(data);
 
   const numberOfBlock = 8; // 每行每列block数
   const numberOfPixels = 8; // 每个block 8像素长宽
@@ -7,17 +9,18 @@ function drawNes(canvas: HTMLCanvasElement, bytes: [], offset: number) {
   const bytesOfBlock = 16; //  每个block 字节数
 
   const context = canvas.getContext("2d");
+  context.save();
   context.scale(10, 10);
 
   for (let i = 0; i < numberOfBlock; i++) {
     for (let j = 0; j < numberOfBlock; j++) {
       const x = j * numberOfPixels;
       const y = i * numberOfPixels;
-      const start =
-        offset + i * numberOfBlock * bytesOfBlock + j * bytesOfBlock;
+      const start = i * numberOfBlock * bytesOfBlock + j * bytesOfBlock;
       drawBlock(context, data.slice(start, start + bytesOfBlock), x, y);
     }
   }
+  context.restore();
 }
 
 function drawBlock(
@@ -26,7 +29,7 @@ function drawBlock(
   x: number,
   y: number
 ) {
-  const colors = ["white", "black", "red", "yellow"];
+  const colors = ["white", "#e44b27", "#f3a75a", "#a77f29"];
 
   for (let i = 0; i < 8; i++) {
     let p1 = data[i]; //第一个字节
