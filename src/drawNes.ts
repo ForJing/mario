@@ -1,4 +1,4 @@
-function drawNes(canvas: HTMLCanvasElement, bytes: []) {
+function drawNes(canvas: HTMLCanvasElement, bytes: [], offset: number) {
   const data = new Uint8Array(bytes);
 
   const numberOfBlock = 8; // 每行每列block数
@@ -13,7 +13,8 @@ function drawNes(canvas: HTMLCanvasElement, bytes: []) {
     for (let j = 0; j < numberOfBlock; j++) {
       const x = j * numberOfPixels;
       const y = i * numberOfPixels;
-      const start = j * numberOfBlock * bytesOfBlock + i * bytesOfBlock;
+      const start =
+        offset + i * numberOfBlock * bytesOfBlock + j * bytesOfBlock;
       drawBlock(context, data.slice(start, start + bytesOfBlock), x, y);
     }
   }
