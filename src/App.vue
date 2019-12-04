@@ -42,7 +42,17 @@ export default {
       const canvas = this.$refs.canvas;
       const context = canvas.getContext("2d");
       drawNes(canvas, this.bytes.slice(this.offset));
-      this.drawSprite(this.bytes.slice(this.offset));
+
+      let step = 0;
+      const bytesPerBlock = 16;
+      const tilesPerSprite = 8;
+      const bytesPerSprite = bytesPerBlock * tilesPerSprite;
+
+      setInterval(() => {
+        this.drawSprite(this.bytes.slice(this.offset + step * bytesPerSprite));
+        step++;
+        step %= 4;
+      }, 200);
     },
 
     drawSprite(bytes) {
@@ -50,7 +60,6 @@ export default {
        * @type {HTMLCanvasElement}
        */
       const canvas = this.$refs.sprite;
-      console.log(canvas);
       const context = canvas.getContext("2d");
       context.save();
       context.scale(10, 10);
@@ -62,7 +71,6 @@ export default {
           const x = j * pixelsPerBlock;
           const y = i * pixelsPerBlock;
           const start = i * 2 * 16 + j * 16;
-          console.log(bytes.slice(start, start + 16));
           drawBlock(context, bytes.slice(start, start + 16), x, y);
         }
       }
