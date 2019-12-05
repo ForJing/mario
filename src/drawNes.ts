@@ -5,8 +5,6 @@ function drawNes(canvas: HTMLCanvasElement, data: Uint8Array) {
   const bytesOfBlock = 16; //  每个block 字节数
 
   const context = canvas.getContext("2d");
-  context.save();
-  context.scale(10, 10);
 
   for (let i = 0; i < numberOfBlock; i++) {
     for (let j = 0; j < numberOfBlock; j++) {
@@ -16,7 +14,6 @@ function drawNes(canvas: HTMLCanvasElement, data: Uint8Array) {
       drawBlock(context, data.slice(start, start + bytesOfBlock), x, y);
     }
   }
-  context.restore();
 }
 
 export function drawBlock(
@@ -39,8 +36,12 @@ export function drawBlock(
       let c2 = (p2 >> (7 - j)) & 0b0000001;
       const pixel = (c2 << 1) + c1;
       const color = colors[pixel];
+
+      context.save();
+      context.scale(10, 10);
       context.fillStyle = color;
       context.fillRect(x + j, y + i, 1, 1);
+      context.restore();
     }
   }
 }

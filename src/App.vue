@@ -2,6 +2,8 @@
   <div>
     <canvas id="canvas" ref="canvas" width="640" height="640"></canvas>
     <canvas id="sprite" ref="sprite" width="160" height="320"></canvas>
+    <canvas ref="tile" width="160" height="160"></canvas>
+
     <div>
       <button @click="changeOffset(-1024)">-1024</button>
       <button @click="changeOffset(+1024)">+1024</button>
@@ -20,21 +22,58 @@ export default {
   data() {
     return {
       offset: 32784,
-      bytes: []
+      bytes: [],
+      tileOffset: 0
     };
   },
 
   mounted() {
-    const that = this;
-    fetch("http://127.0.0.1:8080/mario.nes")
-      .then(r => r.arrayBuffer())
-      .then(data => {
-        that.bytes = new Uint8Array(data);
-        that.drawNes();
-      });
+    this.getNesData();
+    this.setupListeners();
   },
 
   methods: {
+    setupListeners() {
+      /** @type {HTMLCanvasElement} */
+      const totalCanvas = this.$refs.canvas;
+      const tileCanvas = this.$refs.tile;
+
+      const bytesPerBlock = 16;
+      const pixelsPerBlock = 8;
+
+      totalCanvas.addEventListener("click", e => {
+        const { offsetX, offsetY } = e;
+
+        const x = Math.floor(offsetX / 80);
+        const y = Math.floor(offsetY / 80);
+        console.log({ x, y });
+        this.tileOffset =
+          this.offset + x * bytesPerBlock + y * bytesPerBlock * 8;
+      });
+
+      tileCanvas.addEventListener("click", e => {
+        const { offsetX, offsetY } = e;
+
+        const x = Math.floor(offsetX / 80);
+        const y = Math.floor(offsetY / 80);
+
+        drawBlock(
+          tileCanvas.getContext("2d"),
+          this.bytes.slice(this.tileOffset, this.tileOffset + bytesPerBlock),
+          x * pixelsPerBlock,
+          y * pixelsPerBlock
+        );
+      });
+    },
+    getNesData() {
+      const that = this;
+      fetch("http://127.0.0.1:8080/mario.nes")
+        .then(r => r.arrayBuffer())
+        .then(data => {
+          that.bytes = new Uint8Array(data);
+          that.drawNes();
+        });
+    },
     drawNes() {
       /**
        * @type {HTMLCanvasElement}
@@ -61,8 +100,6 @@ export default {
        */
       const canvas = this.$refs.sprite;
       const context = canvas.getContext("2d");
-      context.save();
-      context.scale(10, 10);
 
       const pixelsPerBlock = 8;
 
